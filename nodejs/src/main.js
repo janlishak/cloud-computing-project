@@ -10,7 +10,7 @@ var hostname = os.hostname();
 
 
 app.get('/', (req, res) => {
-  res.send('Hello Jan! From ' + hostname)
+  res.send('Hello Jan! From container LINUX' + hostname)
 })
 
 app.listen(port, () => {

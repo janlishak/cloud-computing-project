@@ -1,0 +1,22 @@
+REMOVE ALL CONTAINERS
+sudo docker container rm  $(sudo docker container ls -a -q) --force
+
+REMOVE ALL IMAGES
+sudo docker rmi $(sudo docker images -q)
+
+REMOVE ALL VOLUMES
+sudo docker volume rm $(sudo docker volume ls -f dangling=true -q)
+
+
+
+REMOVE ALL DOCKER-COMPOUSE CONTAINERS
+sudo docker-compose rm
+
+REBUILD DOCKER-COMPOSE CONTAINERS
+sudo docker-compose build
+
+START DOCKER-COMPOSE
+sudo docker-compose up
+
+REBUILD AND START DOCKER-COMPOSE
+sudo docker-compose up --build
