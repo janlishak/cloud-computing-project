@@ -35,3 +35,7 @@ Follow the wizard to authenticate with github (optional)
 gh auth login
 ```
 
+Example post request to the webservice
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"_id": 26, "accountID": 12345, "username": "janlishak", "titleID": 21, "userAction": "scrolling", "date": "2012-04-23T18:25:43.511Z", "interactionPoint": "menu", "interactionType": "mouse"}'  http://127.0.0.1:80
+```

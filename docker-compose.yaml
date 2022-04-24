@@ -107,6 +107,53 @@ services:
       - frontend
       - backend
 
+  # MongoDB
+  mongo1:
+    hostname: mongo1
+    container_name: localmongo1
+    image: mongo:4.0-xenial
+    ports:
+      - "20001:27017"
+    restart: always
+    networks:
+      - frontend
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo2:
+    hostname: mongo2
+    container_name: localmongo2
+    image: mongo:4.0-xenial
+    ports:
+      - "20002:27017"
+    restart: always
+    networks:
+      - frontend
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo3:
+    hostname: mongo3
+    container_name: localmongo3
+    image: mongo:4.0-xenial
+    ports:
+      - "20003:27017"
+    restart: always
+    networks:
+      - frontend
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongosetup:
+    image: mongo:4.0-xenial
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - ./scripts:/scripts
+    restart: "no"
+    networks:
+      - frontend
+    entrypoint: [ "bash", "/scripts/mongo_setup.sh"]
+
 # Data Volumes
 volumes:
   rabbitmq-stats-data:
