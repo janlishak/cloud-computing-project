@@ -5,28 +5,34 @@ services:
   # Web Server Nodes
   node1: 
     build: ./nodejs 
+    restart: unless-stopped
     ports: 
       - "81:3000"
     volumes:
       - ./nodejs/src/main.js:/usr/src/app/main.js:ro
+      - ./:/project:ro
     networks:
-      - nodejs
+      - frontend
+
   node2: 
     build: ./nodejs 
+    restart: unless-stopped
     ports: 
       - "82:3000"   
     volumes:
       - ./nodejs/src/main.js:/usr/src/app/main.js:ro
     networks:
-      - nodejs
+      - frontend
+
   node3: 
     build: ./nodejs 
+    restart: unless-stopped
     ports: 
       - "83:3000" 
     volumes:
       - ./nodejs/src/main.js:/usr/src/app/main.js:ro
     networks:
-      - nodejs  
+      - frontend
 
   # Web Server Load Balancer
   nginx: 
@@ -34,7 +40,7 @@ services:
     ports: 
       - "80:80" 
     networks:
-      - nodejs   
+      - frontend 
     depends_on:
       - node1
       - node2
@@ -52,6 +58,9 @@ services:
       - RABBITMQ_ERL_COOKIE=password
     ports:
       - "40001:15672"
+    networks:
+      - backend
+
   rabbitmq-queue-one:
     image: bitnami/rabbitmq:3.8.14
     container_name: rabbitmq-queue-one
@@ -64,6 +73,9 @@ services:
       - RABBITMQ_NODE_NAME=rabbitmq@rabbitmq-queue-one
       - RABBITMQ_CLUSTER_NODE_NAME=rabbitmq@rabbitmq-stats
       - RABBITMQ_ERL_COOKIE=password
+    networks:
+      - backend
+
   rabbitmq-queue-two:
     image: bitnami/rabbitmq:3.8.14
     container_name: rabbitmq-queue-two
@@ -76,6 +88,8 @@ services:
       - RABBITMQ_NODE_NAME=rabbitmq@rabbitmq-queue-two
       - RABBITMQ_CLUSTER_NODE_NAME=rabbitmq@rabbitmq-stats
       - RABBITMQ_ERL_COOKIE=password
+    networks:
+      - backend
   
   # Message Service Load Balancer
   haproxy: 
@@ -89,6 +103,9 @@ services:
     ports: 
       - 15672:15672 
       - 5672:5672
+    networks:
+      - frontend
+      - backend
 
 # Data Volumes
 volumes:
@@ -101,5 +118,7 @@ volumes:
 
 # Networking
 networks:
-  nodejs:
+  frontend:
+    driver: bridge
+  backend:
     driver: bridge
